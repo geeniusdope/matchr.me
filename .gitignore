@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+# Use pnpm only for this monorepo (see SETUP.md)
+package-lock.json
+yarn.lock
+
+# Environment (never commit secrets)
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.expo/
+web-build/
+
+# Logs and debug
+npm-debug.log*
+pnpm-debug.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# Test / coverage
+coverage/
+
+# Supabase local (optional)
+.branches/
+.temp/
+
+# Misc
+Untitled
