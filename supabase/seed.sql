@@ -1,0 +1,2 @@
+-- Optional seed data for local `supabase db reset`.
+-- Leave empty or insert test rows for local dev only.
