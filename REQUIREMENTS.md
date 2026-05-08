@@ -58,7 +58,7 @@ So: account identity = personal email; interest registration = work email; match
 - **R1.2** **Every email address a user registers must be verified.** This is required for security and to prevent people from claiming false or someone else's email addresses.
 - **R1.3** **Personal email verification:** Done in the typical manner—the platform sends a **verification link** to the personal email address; the user clicks it to confirm they control that inbox. Once verified, they can log in and receive match notifications at that address.
 - **R1.4** **Work email verification:** The same approach (sending a verification link to the work address) **cannot be relied on** for workplace email addresses, because **corporate firewalls may block incoming email from this site**. A different verification method is required for work email. _(The process by which a user registers and verifies their workplace email address is described in the next section.)_
-- **R1.5** The user can **add one or more work email addresses** to their account; each must be verified using the work-email verification flow (see below). These addresses are what others use when they "add someone they're interested in"; the platform uses them only to resolve matches.
+- **R1.5** The user can **record one or more matchable email addresses** on their account (in practice usually **work emails** they control). **Matchable** means: after verification, each address can be used by others who add it to their interest list to **resolve mutual matches** against this user (**R2.4**). Every matchable address **must be verified** using the work-email verification flow (see below). Users can **remove** any matchable address **at any time** from their account. After removal, that address **must no longer be used to resolve new mutual matches** for this account (for example when the user **leaves an employer**, switches organisations, or simply **does not want to be matched** via that inbox anymore). Removing a matchable address **must not** notify other users or imply one-sided rejection (**R2.2**, **R3.3**). **Existing** matches created while the address was active remain subject to normal match, history, and **unmatch/block** behaviour (**R4.4**) unless documented otherwise.
 - **R1.6** Optional: minimal profile (e.g. display name, photo) used only after a match (e.g. shown in the match notification). No discovery feed, so no "pre-match" profile browsing.
 
 ### 4.1.1 Workplace email registration and verification
@@ -108,7 +108,7 @@ Some members will want to **stop receiving new match activity** temporarily (e.g
 
 #### Match and notification history
 
-- **R2.10** Members must be able to **browse the history of their matches** in chronological order (oldest→newest or newest→oldest—pick one in UX and stay consistent). For **each** match, the history shows **who** they matched with (**counterparty identity**: at minimum the **name and email address** stored for that match, consistent with notifications elsewhere) and **when the match occurred** (an explicit **timestamp** for the moment mutual interest was recorded / the match was created). Optionally, the same row may also show **when this member was notified** if that differs (e.g. they had matching paused and were notified only on resume—**R2.8**).
+- **R2.10** Members must be able to **browse the history of their matches** in chronological order (oldest→newest or newest→oldest—pick one in UX and stay consistent). For **each** match, the history shows **who** they matched with (**counterparty identity**: at minimum the **name and email address** stored for that match, consistent with notifications elsewhere) and **when the match occurred** (an explicit **timestamp** for the moment mutual interest was recorded / the match was created). Optionally, the same row may also show **when this member was notified** if that differs (e.g. they had matching paused and were notified only on resume—**R2.8**). The system must persist **seen/read state** per member per match (e.g. **seen at** timestamp): a match counts as **“new”** until the member has viewed or acknowledged it in the app (typically **`notified_at` present and `seen_at` null**). Members must be able to clear “new” state by viewing the match (and optionally **“mark all as read”**).
 
 ### 4.3 Match Detection
 
@@ -181,7 +181,7 @@ The nature of the service means the user base could expand rapidly once word spr
 
 ## 8. Success Criteria
 
-- Users can join with personal email (verified), link their work email (verified), and add one or more work email addresses of people they're interested in.
+- Users can join with personal email (verified), **record one or more verified matchable emails** (typically work) used for matching, **remove** those addresses when they no longer apply (e.g. leaving an employer), and add one or more work email addresses of people they're interested in.
 - No one is notified when their email is added; they only learn about mutual interest when there is a match.
 - Matches are created only when both have linked their work email and registered each other's work email; both users receive an in-app notification with the match's name and email and are prompted to share their mobile number if they wish.
 - No user is shown that they were "rejected" or "not added"; they only see matches (and optionally "unmatched" if they choose to remove a match).
@@ -193,7 +193,7 @@ The nature of the service means the user base could expand rapidly once word spr
 
 - **Meeting goal:** Dating only, friendship, or multi-purpose (e.g. "networking," "activity partners")?
 - **Limit on emails:** Max number of "interested" (work) emails per user (e.g. one at a time, or a small list)?
-- **Multiple work emails:** Can a user link more than one work email (e.g. if they have two jobs or a work and a university address)?
+- **Multiple matchable emails:** Handled under **R1.5** (one or more per account; each verified; user may remove any). Further caps or UX limits TBD.
 - **If the other person never joins:** Interest stays in the database with no notification; decide whether to allow removing an email from the list or reminders.
 - **Employer/IT visibility:** With work verification, the user _sends_ an email from work to the platform (outbound). Consider whether the verification address and subject/code are neutral. Support for non-work addresses (e.g. university) TBD.
 - **Inbound email for verification:** How the platform receives verification emails (e.g. dedicated address, mail provider, polling vs webhook) and default code expiration value for admin configuration.
@@ -204,4 +204,4 @@ The nature of the service means the user base could expand rapidly once word spr
 
 ---
 
-_Document version: 1.8 | Last updated: May 2026 — Platform: native mobile (iOS & Android) for members; web-based admin portal for operations. Admin requirements to follow. Match outcome: in-app notification (name + email) and optional mobile number sharing; no in-app chat (see 4.4, 4.5, §7). Added: pause matching without clearing interests; deferred notifications; match history with who + when (R2.6–R2.10, R3.4)._
+_Document version: 1.11 | Last updated: May 2026 — Platform: native mobile (iOS & Android) for members; web-based admin portal for operations. Admin requirements to follow. Match outcome: in-app notification (name + email) and optional mobile number sharing; no in-app chat (see 4.4, 4.5, §7). R1.5: one or more **matchable** (verified) emails per user; pause matching; match history (R2.6–R2.10, R3.4)._

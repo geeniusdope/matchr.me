@@ -33,23 +33,26 @@ pnpm run format:check
 
 ## Documentation
 
-| Doc                                                                                      | Description                  |
-| ---------------------------------------------------------------------------------------- | ---------------------------- |
-| [SETUP.md](./SETUP.md)                                                                   | Developer onboarding         |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)                                                     | Branches, PRs, code style    |
-| [STEP-01-REPOSITORY-AND-DEV-ENVIRONMENT.md](./STEP-01-REPOSITORY-AND-DEV-ENVIRONMENT.md) | Detailed Step 1 instructions |
-| [NEXT-STEPS.md](./NEXT-STEPS.md)                                                         | Roadmap after Step 1         |
-| [DEV-ENVIRONMENT-AND-CICD.md](./DEV-ENVIRONMENT-AND-CICD.md)                             | CI/CD plan                   |
-| [SUPABASE.md](./SUPABASE.md)                                                             | Backend stack notes          |
-| [FRONTEND-TOOLS.md](./FRONTEND-TOOLS.md)                                                 | Mobile / admin tooling       |
+| Doc                                                                                      | Description                                        |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [SETUP.md](./SETUP.md)                                                                   | Developer onboarding                               |
+| [MIGRATIONS-AND-GIT.md](./MIGRATIONS-AND-GIT.md)                                         | DB migrations (`pnpm db:push`) & pushing to GitHub |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)                                                     | Branches, PRs, code style                          |
+| [STEP-01-REPOSITORY-AND-DEV-ENVIRONMENT.md](./STEP-01-REPOSITORY-AND-DEV-ENVIRONMENT.md) | Detailed Step 1 instructions                       |
+| [NEXT-STEPS.md](./NEXT-STEPS.md)                                                         | Roadmap after Step 1                               |
+| [DEV-ENVIRONMENT-AND-CICD.md](./DEV-ENVIRONMENT-AND-CICD.md)                             | CI/CD plan                                         |
+| [SUPABASE.md](./SUPABASE.md)                                                             | Backend stack notes                                |
+| [FRONTEND-TOOLS.md](./FRONTEND-TOOLS.md)                                                 | Mobile / admin tooling                             |
 
 ## Scripts (root)
 
-| Script                  | Description           |
-| ----------------------- | --------------------- |
-| `pnpm run lint`         | ESLint                |
-| `pnpm run format`       | Prettier — write      |
-| `pnpm run format:check` | Prettier — check only |
+| Script                  | Description                                                                        |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| `pnpm db:push`          | Apply Supabase migrations to linked remote DB ([details](./MIGRATIONS-AND-GIT.md)) |
+| `pnpm db:link`          | Link local repo to a Supabase project (pass `-- --project-ref <ref>`)              |
+| `pnpm run lint`         | ESLint                                                                             |
+| `pnpm run format`       | Prettier — write                                                                   |
+| `pnpm run format:check` | Prettier — check only                                                              |
 
 After `apps/mobile` and `apps/admin` exist, add `dev` scripts per app (see SETUP.md).
 

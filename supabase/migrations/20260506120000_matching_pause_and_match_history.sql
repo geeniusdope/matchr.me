@@ -75,7 +75,7 @@ create policy "matches_select_participant"
 -- Inserts/updates: application / Edge Functions with service role (no authenticated insert policy).
 
 -- ---------------------------------------------------------------------------
--- Per-member match history (counterparty snapshot + optional notified_at)
+-- Per-member match history (counterparty snapshot + notified_at + seen_at)
 -- ---------------------------------------------------------------------------
 
 create table public.match_history_entries (
@@ -85,14 +85,22 @@ create table public.match_history_entries (
   counterpart_display_name text not null,
   counterpart_email text not null,
   notified_at timestamptz,
+  seen_at timestamptz,
   constraint match_history_entries_one_row_per_user_per_match unique (match_id, user_id)
 );
 
 comment on table public.match_history_entries is
-  'Abstracted match timeline per member: who they matched with (snapshot), optional deferred-notification time. Match occurrence time: join matches.created_at or duplicate if denormalization needed later.';
+  'Abstracted match timeline per member: counterparty snapshot, notification delivery time, read/seen state. Match time: join matches.created_at.';
+
+comment on column public.match_history_entries.seen_at is
+  'First time this member opened/acknowledged the match in-app; NULL = unseen. Use with notified_at for “new match” badges (e.g. notified_at IS NOT NULL AND seen_at IS NULL).';
 
 create index match_history_entries_user_id_created_via_match_idx
   on public.match_history_entries (user_id);
+
+create index match_history_entries_user_new_match_idx
+  on public.match_history_entries (user_id)
+  where notified_at is not null and seen_at is null;
 
 alter table public.match_history_entries enable row level security;
 
@@ -101,6 +109,40 @@ create policy "match_history_entries_select_own"
   for select
   to authenticated
   using (user_id = (select auth.uid ()));
+
+-- Members mark rows seen in the UI; backend inserts rows and sets notified_at (service role).
+create policy "match_history_entries_update_own"
+  on public.match_history_entries
+  for update
+  to authenticated
+  using (user_id = (select auth.uid ()))
+  with check (user_id = (select auth.uid ()));
+
+create or replace function public.match_history_entries_member_update_guard ()
+returns trigger
+language plpgsql
+security invoker
+set search_path = public
+as $$
+begin
+  -- Logged-in member updating their own row: only seen_at may change (snapshot + notified_at are server-owned).
+  if (select auth.uid ()) is not null and (select auth.uid ()) = old.user_id then
+    if new.match_id is distinct from old.match_id
+       or new.user_id is distinct from old.user_id
+       or new.counterpart_display_name is distinct from old.counterpart_display_name
+       or new.counterpart_email is distinct from old.counterpart_email
+       or new.notified_at is distinct from old.notified_at then
+      raise exception 'Members may only update seen_at on match_history_entries';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+create trigger match_history_entries_member_update_guard_trg
+  before update on public.match_history_entries
+  for each row
+  execute function public.match_history_entries_member_update_guard ();
 
 -- ---------------------------------------------------------------------------
 -- Keep pause history in sync when profiles.matching_paused changes
