@@ -18,4 +18,13 @@ export default [
       sourceType: 'module',
     },
   },
+  {
+    files: ['scripts/**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'writable',
+      },
+    },
+  },
 ];

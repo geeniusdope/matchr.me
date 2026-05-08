@@ -95,23 +95,39 @@ To strengthen account security, the platform supports **multi-factor authenticat
 - **R2.4** The system matches "interest in X@company.com" to the **account that has linked and verified** that work email (even though that account logs in with a personal email). So matching is based on **work email** on both sides.
 - **R2.5** Members can **review and maintain** their list of people they're interested in. They can **view** the list (each entry showing the email and, if recorded, the person's name), **add** new entries, **edit** existing entries (e.g. update the name), and **remove** entries. The list is private and used only for matching; no one else sees it.
 
+#### Pause matching (inactive state)
+
+Some members will want to **stop receiving new match activity** temporarily (e.g. they enter a relationship) **without** deleting people from their interest list. The product must support an explicit **pause** / **inactive-for-matching** state.
+
+- **R2.6** Members can **turn matching off and on** via a clear control (e.g. “Pause matching” / “Active for matching”). While matching is **paused**:
+  - Their **interest list is unchanged**; they must **not** be forced to remove addresses of people they are interested in.
+  - Mutual-interest **match records** may still be created when the usual criteria are met (see **R3.4**); the platform **does not** infer rejection from pause.
+- **R2.7** While a member has matching **paused**, the system **must not deliver** to that member the **in-app** (and **push** / **email**, if used) **notifications** that announce **new** matches that formed **during** the paused period. Those notifications are **held as pending** for that user until matching is **resumed**.
+- **R2.8** When the member **resumes** matching, the system **must deliver all pending match notifications** for matches that occurred **while they were paused** (so they do not lose legitimate mutual matches). Delivery order should be **chronological by match time** unless a different ordering is documented.
+- **R2.9** **Per-user delivery:** Another party who is **not** paused continues to receive **their** match notifications when the match is created, according to normal rules. One member’s pause affects **only** that member’s notification timing, not the other’s right to be notified when mutual interest exists.
+
+#### Match and notification history
+
+- **R2.10** Members must be able to **browse the history of their matches** in chronological order (oldest→newest or newest→oldest—pick one in UX and stay consistent). For **each** match, the history shows **who** they matched with (**counterparty identity**: at minimum the **name and email address** stored for that match, consistent with notifications elsewhere) and **when the match occurred** (an explicit **timestamp** for the moment mutual interest was recorded / the match was created). Optionally, the same row may also show **when this member was notified** if that differs (e.g. they had matching paused and were notified only on resume—**R2.8**).
+
 ### 4.3 Match Detection
 
 - **R3.0** Matching uses **work email**. When a user **joins**, they link their work email; the system can then resolve "interest in work-email X" to the account that linked X. When a user **adds a work email** to their interest list, the system checks: is that work email linked to an existing account that has already added the current user's **work email**? If so, it's a match. (Current user's "work email" means the work email they linked to their account.)
 - **R3.1** A **match** is created only when **both** have registered each other's **work email** (Person A has B's work email in their list, and Person B has A's work email in their list). Order of registration does not matter. Both users must have linked and verified their work email for matching to work.
-- **R3.2** When a match is detected, the system sends **both users an in-app notification** that includes the **name and email address** of the person they matched with. The application does not open a chat; it only delivers this notification. Both parties are then **asked whether they would like to share their mobile number** with the person they matched with.
+- **R3.2** When a match is detected, the system sends **both users an in-app notification** that includes the **name and email address** of the person they matched with—**subject to R2.7–R2.9** when either user has matching paused. The application does not open a chat; it only delivers this notification. Both parties are then **asked whether they would like to share their mobile number** with the person they matched with (again respecting pause-related deferral for prompts if required for consistency with notifications—see open decision below).
 - **R3.3** The system never reveals one-sided interest (e.g. no "Someone added you—sign up to see who!" that implies others didn't).
+- **R3.4** **Pause and match creation:** Pausing matching **does not** remove interests and **does not** block **creation** of a match row when mutual interest exists (unless explicitly decided otherwise for legal/product reasons). Pause primarily controls **notification** (and related prompts) **to the paused user** as described in **R2.6–R2.9**.
 
 ### 4.4 Matching & Post-Match (Notification & Contact Sharing)
 
-- **R4.1** Matches are symmetric: both users receive the same match and see the other's name and email in the in-app notification.
-- **R4.2** The in-app notification **includes the name and email address** of the person they matched with. Users can view a list of current matches (each showing name and email as provided).
+- **R4.1** Matches are symmetric in **data**: both users are parties to the same match record. **Notifications** may arrive at different times if one user has matching paused (**R2.9**); when a notification is delivered, each party sees the other's name and email in line with **R3.2**.
+- **R4.2** The in-app notification **includes the name and email address** of the person they matched with. Users can view **current** matches (each showing name and email as provided) and **browse full match history** with **counterparty** and **match occurrence time**, per **R2.10**.
 - **R4.3** After the match notification, **each party is asked if they would like to share their mobile number** with the person they matched with. Sharing is optional and at the user's choice; the platform delivers the number to the other party only when the user opts in (e.g. "Share my number with [name]?"). How and when the other party sees the shared number (e.g. only if both share, or as soon as one shares) is a product decision; the requirement is that both are prompted to decide.
 - **R4.4** Users can unmatch or block; after that, the other person no longer sees them as a match (no need to expose "rejected," only "unmatched" or similar).
 
 ### 4.5 Notifications & Engagement
 
-- **R5.1** When a match occurs, **both parties receive an in-app notification** that includes the **name and email address** of the person they matched with. They may also be alerted by email and/or push so they know they have a new match. The primary action is viewing the match details (name, email) in the app and being prompted to share their mobile number if they wish.
+- **R5.1** When a match occurs, **each party receives** an in-app notification (and optional email/push) that includes the **name and email address** of the person they matched with—**except** when matching is paused for that party, in which case notifications follow **R2.7–R2.8**. The primary action is viewing the match details (name, email) in the app and being prompted to share their mobile number if they wish.
 - **R5.2** If a user chooses to share their mobile number with a match, the **other party is notified** (e.g. in-app) and can see the shared number in the match view, in line with the product rules for when shared numbers are revealed.
 - **R5.3** Notifications must not reveal one-sided interest (e.g. no "Someone added you—sign up to see who!").
 
@@ -184,7 +200,8 @@ The nature of the service means the user base could expand rapidly once word spr
 - **Monetization:** Freemium (e.g. limit number of interests), subscription, or ad-supported?
 - **MFA for members:** Whether MFA is optional, encouraged, or mandatory for member accounts (admin MFA is addressed in R1.10).
 - **Mobile number sharing:** Whether the other party sees a shared mobile number only when both have opted in, or as soon as one party shares (and how it is displayed in the match view).
+- **Paused matching and mobile-number prompts:** Whether the “share my mobile number?” prompt for a match is **deferred** until resume (aligned with deferred notifications) or shown only when the match notification is delivered—must stay consistent with **R2.7–R2.8** and privacy expectations.
 
 ---
 
-_Document version: 1.6 | Last updated: Mar 2025 — Platform: native mobile (iOS & Android) for members; web-based admin portal for operations. Admin requirements to follow. Match outcome: in-app notification (name + email) and optional mobile number sharing; no in-app chat (see 4.4, 4.5, §7)._
+_Document version: 1.8 | Last updated: May 2026 — Platform: native mobile (iOS & Android) for members; web-based admin portal for operations. Admin requirements to follow. Match outcome: in-app notification (name + email) and optional mobile number sharing; no in-app chat (see 4.4, 4.5, §7). Added: pause matching without clearing interests; deferred notifications; match history with who + when (R2.6–R2.10, R3.4)._
