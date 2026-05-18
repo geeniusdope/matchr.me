@@ -2,6 +2,8 @@
 
 Prioritized actions to move from requirements and docs to a working foundation. Adjust order based on team size and whether you need to demo quickly or build solidly.
 
+**Agreed v0 scope:** [V0-SCOPE.md](./V0-SCOPE.md) — implement this before expanding to MFA, admin, push, or deferred pause notifications.
+
 ---
 
 ## Phase 1: Foundation (Do First)

@@ -39,6 +39,7 @@ pnpm run format:check
 | [MIGRATIONS-AND-GIT.md](./MIGRATIONS-AND-GIT.md)                                         | DB migrations (`pnpm db:push`) & pushing to GitHub |
 | [CONTRIBUTING.md](./CONTRIBUTING.md)                                                     | Branches, PRs, code style                          |
 | [STEP-01-REPOSITORY-AND-DEV-ENVIRONMENT.md](./STEP-01-REPOSITORY-AND-DEV-ENVIRONMENT.md) | Detailed Step 1 instructions                       |
+| [V0-SCOPE.md](./V0-SCOPE.md)                                                             | Agreed v0 prototype scope (May 2026)               |
 | [NEXT-STEPS.md](./NEXT-STEPS.md)                                                         | Roadmap after Step 1                               |
 | [DEV-ENVIRONMENT-AND-CICD.md](./DEV-ENVIRONMENT-AND-CICD.md)                             | CI/CD plan                                         |
 | [SUPABASE.md](./SUPABASE.md)                                                             | Backend stack notes                                |
